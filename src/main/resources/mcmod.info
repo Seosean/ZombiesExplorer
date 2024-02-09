@@ -1,0 +1,16 @@
+[
+{
+  "modid": "zombiesexplorer",
+  "name": "Zombies Explorer",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Seosean"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

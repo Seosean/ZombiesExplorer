@@ -1,0 +1,20 @@
+{
+  "package": "com.seosean.zombiesexplorer.mixins",
+  "refmap": "mixins.zombiesexplorer.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "verbose": true,
+  "mixins": [
+    "MixinGuiIngame",
+    "MixinLayerArmorBase",
+    "MixinLayerCustomHead",
+    "MixinModelBase",
+    "MixinModid",
+    "MixinNetHandlerPlayClient",
+    "MixinRender",
+    "MixinRendererLivingEntity",
+    "MixinRenderGlobal",
+    "MixinRenderManager",
+    "MixinWorldClient",
+    "MixinEntityRenderer"
+  ]
+}
