@@ -1,6 +1,7 @@
 package com.seosean.zombiesexplorer;
 
 import com.seosean.zombiesexplorer.utils.DebugUtils;
+import com.seosean.zombiesexplorer.utils.GameUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -77,10 +78,11 @@ public class SpawnPatternNotice {
 
             if (ZombiesExplorer.PowerupDetector) {
                 if (!(entityLivingBase instanceof EntityBlaze || entityLivingBase instanceof EntityEndermite || entityLivingBase instanceof EntitySquid || (entityLivingBase instanceof EntitySlime && ((EntitySlime) entityLivingBase).getSlimeSize() == 2)
-                || entityLivingBase instanceof EntityChicken || entityLivingBase instanceof EntityMooshroom || (entityLivingBase instanceof EntityWolf && entityLivingBase.getHealth() <= 10))) {
+                || entityLivingBase instanceof EntityChicken || entityLivingBase instanceof EntityMooshroom || (GameUtils.getMap().equals(GameUtils.ZombiesMap.ALIEN_ARCADIUM) && entityLivingBase instanceof EntityWolf && entityLivingBase.getHealth() <= 10))) {
                     boolean flag = powerUpDetect.insRounds.isEmpty() && powerUpDetect.maxRounds.isEmpty() && powerUpDetect.ssRounds.isEmpty();
                     int predict = flag ? (powerUpDetect.getCurrentRound() == 1 ? 1 : 2) : ZombiesExplorer.PowerupPredictor;
                     int amount = powerUpDetect.amountOfIncomingPowerups;
+
                     if (startCollecting) {
                         if (powerupEnsuredMobList.size() == amount && powerupPredictMobList.size() < predict) {
                             if (!powerupPredictMobList.contains(entityLivingBase) && !powerupEnsuredMobList.contains(entityLivingBase)) {
@@ -89,7 +91,7 @@ public class SpawnPatternNotice {
                         }
 
                         if (powerupEnsuredMobList.size() < amount) {
-                            if (!powerupEnsuredMobList.contains(entityLivingBase)) {
+                            if (!powerupEnsuredMobList.contains(entityLivingBase) && !powerupPredictMobList.contains(entityLivingBase)) {
                                 powerupEnsuredMobList.add(entityLivingBase);
                             }
                         }
