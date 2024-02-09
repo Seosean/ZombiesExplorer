@@ -28,7 +28,7 @@ import org.lwjgl.input.Keyboard;
 )
 public class ZombiesExplorer {
     public static final String MODID = "zombiesexplorer";
-    public static final String VERSION = "1.1";
+    public static final String VERSION = "1.2";
     public static ZombiesExplorer INSTANCE;
     public SpawnPatternNotice spawnPatternNotice;
     public PowerUpDetect powerUpDetect;
