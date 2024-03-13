@@ -1,7 +1,7 @@
 package com.seosean.zombiesexplorer.mixins;
 
-import com.seosean.zombiesexplorer.mixinsinterface.IMixinLayerArmorBase;
 import com.seosean.zombiesexplorer.ZombiesExplorer;
+import com.seosean.zombiesexplorer.mixinsinterface.IMixinLayerArmorBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;

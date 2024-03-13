@@ -1,20 +1,16 @@
 package com.seosean.zombiesexplorer;
 
-import com.seosean.zombiesexplorer.commands.Commands;
 import com.seosean.zombiesexplorer.config.ZombiesExplorerGuiConfig;
 import com.seosean.zombiesexplorer.utils.DelayedTask;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IChatComponent;
-import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,16 +18,18 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
+import java.util.List;
+
 @Mod(modid = ZombiesExplorer.MODID, version = ZombiesExplorer.VERSION,
         acceptedMinecraftVersions = "[1.8.9]",
-        guiFactory = "com.seosean.zombiesexplorer.config.ZombiesExplorerGuiFactory"
+        guiFactory = "com.seosean.zombiesexplorer.config.ZombiesExplorerGuiFactory",
+        dependencies = "required-after:showspawntime@[2.0,)"
 )
 public class ZombiesExplorer {
     public static final String MODID = "zombiesexplorer";
-    public static final String VERSION = "1.2";
+    public static final String VERSION = "1.5";
     public static ZombiesExplorer INSTANCE;
     public SpawnPatternNotice spawnPatternNotice;
-    public PowerUpDetect powerUpDetect;
     private Configuration config;
     private Logger logger;
 
@@ -48,15 +46,33 @@ public class ZombiesExplorer {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
+
+
         this.ConfigLoad();
         INSTANCE = this;
-        MinecraftForge.EVENT_BUS.register(spawnPatternNotice = new SpawnPatternNotice());
-        MinecraftForge.EVENT_BUS.register(powerUpDetect = new PowerUpDetect());
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(spawnPatternNotice = new SpawnPatternNotice());
         ClientRegistry.registerKeyBinding(keyToggleConfig);
-        ClientCommandHandler.instance.registerCommand(new Commands());
+
+//        sstAPI = ShowSpawnTimeAPI.getInstance();
+        if (!ZombiesExplorer.isShowSpawnTimeInstalled()) {
+            logger.error("To use ZombiesExplorer, you must install ShowSpawnTime 2.0.");
+            MinecraftForge.EVENT_BUS.unregister(spawnPatternNotice);
+            ENABLED = false;
+        }
     }
 
+    public static boolean isShowSpawnTimeInstalled(){
+        List<ModContainer> mods = Loader.instance().getActiveModList();
+        for (ModContainer mod : mods) {
+            if ("showspawntime".equals(mod.getModId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean ENABLED = true;
     public static ZombiesExplorer getInstance() {
         return INSTANCE;
     }
@@ -115,9 +131,7 @@ public class ZombiesExplorer {
     public SpawnPatternNotice getSpawnPatternNotice() {
         return spawnPatternNotice;
     }
-    public PowerUpDetect getPowerUpDetect() {
-        return powerUpDetect;
-    }
+
     public KeyBinding keyToggleConfig = new KeyBinding("Config", Keyboard.KEY_K, "Zombies Explorer");
 
     @SubscribeEvent
@@ -130,19 +144,6 @@ public class ZombiesExplorer {
                 }
             }.runTaskLater(2);
         }
-    }
-
-    @SubscribeEvent
-    public void onPlayerJoin(EntityJoinWorldEvent event) {
-        if (!event.world.isRemote) {
-            return;
-        }
-
-        if (!event.entity.equals(Minecraft.getMinecraft().thePlayer)) {
-            return;
-        }
-
-        ZombiesExplorer.getInstance().getPowerUpDetect().setGameStart(false);
     }
 
     public enum RenderType {

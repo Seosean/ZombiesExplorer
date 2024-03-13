@@ -1,10 +1,10 @@
 package com.seosean.zombiesexplorer.mixins;
 
+import com.seosean.zombiesexplorer.ZombiesExplorer;
 import com.seosean.zombiesexplorer.mixinsinterface.IMixinLayerArmorBase;
 import com.seosean.zombiesexplorer.mixinsinterface.IMixinLayerCustomHead;
 import com.seosean.zombiesexplorer.mixinsinterface.IMixinModelBase;
 import com.seosean.zombiesexplorer.mixinsinterface.IMixinRendererLivingEntity;
-import com.seosean.zombiesexplorer.ZombiesExplorer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
@@ -305,7 +305,6 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> exte
             GlStateManager.scale(-f1, -f1, f1);
             GlStateManager.disableLighting();
             GlStateManager.depthMask(false);
-//            GlStateManager.disableDepth();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             Tessellator tessellator = Tessellator.getInstance();

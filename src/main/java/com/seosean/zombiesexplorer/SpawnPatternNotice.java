@@ -1,7 +1,6 @@
 package com.seosean.zombiesexplorer;
 
-import com.seosean.zombiesexplorer.utils.DebugUtils;
-import com.seosean.zombiesexplorer.utils.GameUtils;
+import com.seosean.showspawntime.ShowSpawnTime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -13,6 +12,7 @@ import net.minecraft.entity.monster.EntityEndermite;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityGolem;
+import net.minecraft.entity.monster.EntityGuardian;
 import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
@@ -20,6 +20,7 @@ import net.minecraft.entity.monster.EntityWitch;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityMooshroom;
+import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -46,15 +47,14 @@ public class SpawnPatternNotice {
         }
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
         if (entity.equals(Minecraft.getMinecraft().thePlayer)) {
-            powerupEnsuredMobList.clear();
-            powerupPredictMobList.clear();
-            badhsMobList.clear();
-            allEntities.clear();
+            powerupEnsuredMobList = new ArrayList<>();
+            powerupPredictMobList = new ArrayList<>();
+            badhsMobList = new ArrayList<>();
+            allEntities = new ArrayList<>();
             startCollecting = true;
             return;
         }
 
-        PowerUpDetect powerUpDetect = ZombiesExplorer.INSTANCE.getPowerUpDetect();
         if (entityLivingBase instanceof EntityZombie ||
                 entityLivingBase instanceof EntitySlime ||
                 entityLivingBase instanceof EntityWolf ||
@@ -70,18 +70,18 @@ public class SpawnPatternNotice {
                 entityLivingBase instanceof EntityGiantZombie ||
                 entityLivingBase instanceof EntityCaveSpider ||
                 entityLivingBase instanceof EntityMooshroom ||
+                entityLivingBase instanceof EntityOcelot ||
+                (entityLivingBase instanceof EntityGuardian && !entityLivingBase.isInvisible()) ||
                 (entityLivingBase instanceof EntityChicken && !entityLivingBase.isInvisible())) {
 
-            if (entityLivingBase.ticksExisted >= 20) {
-                return;
-            }
 
             if (ZombiesExplorer.PowerupDetector) {
                 if (!(entityLivingBase instanceof EntityBlaze || entityLivingBase instanceof EntityEndermite || entityLivingBase instanceof EntitySquid || (entityLivingBase instanceof EntitySlime && ((EntitySlime) entityLivingBase).getSlimeSize() == 2)
-                || entityLivingBase instanceof EntityChicken || entityLivingBase instanceof EntityMooshroom || (GameUtils.getMap().equals(GameUtils.ZombiesMap.ALIEN_ARCADIUM) && entityLivingBase instanceof EntityWolf && entityLivingBase.getHealth() <= 10))) {
-                    boolean flag = powerUpDetect.insRounds.isEmpty() && powerUpDetect.maxRounds.isEmpty() && powerUpDetect.ssRounds.isEmpty();
-                    int predict = flag ? (powerUpDetect.getCurrentRound() == 1 ? 1 : 2) : ZombiesExplorer.PowerupPredictor;
-                    int amount = powerUpDetect.amountOfIncomingPowerups;
+                || entityLivingBase instanceof EntityChicken || entityLivingBase instanceof EntityMooshroom || (entityLivingBase instanceof EntityWolf && entityLivingBase.getHealth() <= 10))) {
+                    boolean flag = ShowSpawnTime.getPowerupDetect().insRounds.isEmpty() && ShowSpawnTime.getPowerupDetect().maxRounds.isEmpty() && ShowSpawnTime.getPowerupDetect().ssRounds.isEmpty();
+                    int predict = flag ? (ShowSpawnTime.getSpawnTimes().currentRound == 1 ? 1 : 2) : ZombiesExplorer.PowerupPredictor;
+
+                    int amount = PowerUpDetect.amountOfIncomingPowerups;
 
                     if (startCollecting) {
                         if (powerupEnsuredMobList.size() == amount && powerupPredictMobList.size() < predict) {
@@ -99,13 +99,6 @@ public class SpawnPatternNotice {
                         if (powerupEnsuredMobList.size() == amount && powerupPredictMobList.size() == predict) {
                             startCollecting = false;
                         }
-//
-//                        DebugUtils.sendMessage("===============================================");
-//                        DebugUtils.sendMessage("amountOfIncomingPowerups: " + ZombiesExplorer.getInstance().getPowerUpDetect().amountOfIncomingPowerups);
-//                        DebugUtils.sendMessage("amount: " + amount);
-//                        DebugUtils.sendMessage("powerupEnsuredMobList: " + powerupEnsuredMobList.size());
-//                        DebugUtils.sendMessage("powerupPredictMobList: " + powerupPredictMobList.size());
-//                        DebugUtils.sendMessage("===============================================");
                     }
                 }
             }
@@ -138,6 +131,4 @@ public class SpawnPatternNotice {
             }
         }
     }
-
-
 }

@@ -1,14 +1,12 @@
 package com.seosean.zombiesexplorer.mixins;
 
 import com.seosean.zombiesexplorer.ZombiesExplorer;
-import com.seosean.zombiesexplorer.mixinsinterface.IMixinRendererLivingEntity;
 import com.seosean.zombiesexplorer.mixinsinterface.IMixinRenderManager;
-import com.seosean.zombiesexplorer.utils.DebugUtils;
+import com.seosean.zombiesexplorer.mixinsinterface.IMixinRendererLivingEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderZombie;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.crash.CrashReport;

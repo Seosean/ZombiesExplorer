@@ -4,17 +4,17 @@
   "compatibilityLevel": "JAVA_8",
   "verbose": true,
   "mixins": [
+    "MixinEntityRenderer",
+    "MixinFMLClientHandler",
     "MixinGuiIngame",
     "MixinLayerArmorBase",
     "MixinLayerCustomHead",
     "MixinModelBase",
     "MixinModid",
-    "MixinNetHandlerPlayClient",
     "MixinRender",
     "MixinRendererLivingEntity",
     "MixinRenderGlobal",
     "MixinRenderManager",
-    "MixinWorldClient",
-    "MixinEntityRenderer"
+    "MixinWorldClient"
   ]
 }
