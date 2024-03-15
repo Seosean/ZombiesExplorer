@@ -138,6 +138,7 @@ shadowJar {
         exclude 'commons-io-2.4.jar'
         exclude 'dummyThing'
         exclude 'LICENSE.txt'
+        exclude 'ShowSpawnTime-2.0 Pre-3.jar'
     }
     finalizedBy 'reobfJar'
 }

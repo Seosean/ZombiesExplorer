@@ -46,15 +46,12 @@ public class ZombiesExplorer {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-
-
         this.ConfigLoad();
         INSTANCE = this;
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(spawnPatternNotice = new SpawnPatternNotice());
         ClientRegistry.registerKeyBinding(keyToggleConfig);
 
-//        sstAPI = ShowSpawnTimeAPI.getInstance();
         if (!ZombiesExplorer.isShowSpawnTimeInstalled()) {
             logger.error("To use ZombiesExplorer, you must install ShowSpawnTime 2.0.");
             MinecraftForge.EVENT_BUS.unregister(spawnPatternNotice);
