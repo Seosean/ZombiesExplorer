@@ -37,7 +37,7 @@ public class MixinEntityRenderer {
                     List<Entity> entitiesInRange = this.mc.theWorld.getEntitiesInAABBexcluding(entity, entity.getEntityBoundingBox().addCoord(vec31.xCoord * 70, vec31.yCoord * 70, vec31.zCoord * 70).expand((double) f, (double) f, (double) f), Predicates.and(EntitySelectors.NOT_SPECTATING, Entity::canBeCollidedWith));
                     Vec3 detectVec = vec3.addVector(vec31.xCoord * 70, vec31.yCoord * 70, vec31.zCoord * 70);
                     for (Entity entity1 : entitiesInRange) {
-                        float f1 = 0.3F;
+                        float f1 = 0.4F;
                         AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, 0.1, f1);
                         MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, detectVec);
 

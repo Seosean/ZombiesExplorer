@@ -1,6 +1,7 @@
 package com.seosean.zombiesexplorer;
 
 import com.seosean.showspawntime.ShowSpawnTime;
+import com.seosean.showspawntime.utils.LanguageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -24,6 +25,8 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -71,13 +74,12 @@ public class SpawnPatternNotice {
                 entityLivingBase instanceof EntityCaveSpider ||
                 entityLivingBase instanceof EntityMooshroom ||
                 entityLivingBase instanceof EntityOcelot ||
-                (entityLivingBase instanceof EntityGuardian && !entityLivingBase.isInvisible()) ||
+                (entityLivingBase instanceof EntityGuardian && entityLivingBase.getMaxHealth() > 30) ||
                 (entityLivingBase instanceof EntityChicken && !entityLivingBase.isInvisible())) {
 
 
             if (ZombiesExplorer.PowerupDetector) {
-                if (!(entityLivingBase instanceof EntityBlaze || entityLivingBase instanceof EntityEndermite || entityLivingBase instanceof EntitySquid || (entityLivingBase instanceof EntitySlime && ((EntitySlime) entityLivingBase).getSlimeSize() == 2)
-                || entityLivingBase instanceof EntityChicken || entityLivingBase instanceof EntityMooshroom || (entityLivingBase instanceof EntityWolf && entityLivingBase.getHealth() <= 10))) {
+                if (!(entityLivingBase instanceof EntitySquid) && !(entityLivingBase instanceof EntityChicken) && !(entityLivingBase instanceof EntityMooshroom) && !(entityLivingBase instanceof EntityWolf && LanguageUtils.getMap().equals(LanguageUtils.ZombiesMap.ALIEN_ARCADIUM) && entityLivingBase.getDistanceSq(-16.5, 72, -0.5) <= 36)) {
                     boolean flag = ShowSpawnTime.getPowerupDetect().insRounds.isEmpty() && ShowSpawnTime.getPowerupDetect().maxRounds.isEmpty() && ShowSpawnTime.getPowerupDetect().ssRounds.isEmpty();
                     int predict = flag ? (ShowSpawnTime.getSpawnTimes().currentRound == 1 ? 1 : 2) : ZombiesExplorer.PowerupPredictor;
 
@@ -113,13 +115,15 @@ public class SpawnPatternNotice {
         }
     }
 
+
     @SubscribeEvent
     public void setDisplayTime(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc == null || mc.theWorld == null ) return;
-        if(event.phase!= TickEvent.Phase.START) return;
+        if (event.phase!= TickEvent.Phase.START) return;
         EntityPlayerSP p = mc.thePlayer;
-        if(p == null) return;
+        if (p == null) return;
+        
         List<EntityLivingBase> list = new ArrayList<>();
 
         list.addAll(this.allEntities);
@@ -130,5 +134,16 @@ public class SpawnPatternNotice {
                 badhsMobList.remove(entity);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void reinitialize(EntityJoinWorldEvent event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc == null || mc.theWorld == null ) return;
+        EntityPlayerSP p = mc.thePlayer;
+        if(p == null) return;
+        if (!event.entity.equals(p)) return;
+
+        PowerUpDetect.amountOfIncomingPowerups = 0;
     }
 }
