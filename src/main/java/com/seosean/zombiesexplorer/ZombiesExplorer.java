@@ -27,7 +27,7 @@ import java.util.List;
 )
 public class ZombiesExplorer {
     public static final String MODID = "zombiesexplorer";
-    public static final String VERSION = "1.5";
+    public static final String VERSION = "1.7";
     public static ZombiesExplorer INSTANCE;
     public SpawnPatternNotice spawnPatternNotice;
     private Configuration config;
@@ -79,6 +79,7 @@ public class ZombiesExplorer {
     public static int PowerupPredictor;
     public static boolean NameTag;
     public static boolean BadHeadShotOnLine;
+    public static boolean MobSpawnOrder;
     public void ConfigLoad() {
         config.load();
         logger.info("Started loading config. ");
@@ -88,6 +89,7 @@ public class ZombiesExplorer {
         String commandPowerupPredictor;
         String commentNameTag;
         String commentBadHeadShotOnLine;
+        String commentMobSpawnOrder;
 
         commentPowerupDetector = "Powerup Detector";
         PowerupDetector = config.get(Configuration.CATEGORY_GENERAL, "Powerup Detector", true, commentPowerupDetector).getBoolean();
@@ -103,6 +105,9 @@ public class ZombiesExplorer {
 
         commentBadHeadShotOnLine = "Marks all mobs on the line connected to you and bad headshot mob.";
         BadHeadShotOnLine = config.get(Configuration.CATEGORY_GENERAL, "Bad HeadShot OnLine", true, commentBadHeadShotOnLine).getBoolean();
+
+        commentMobSpawnOrder = "Display the spawning order of certain types of mob.";
+        MobSpawnOrder = config.get(Configuration.CATEGORY_GENERAL, "Mob Spawn Order", true, commentMobSpawnOrder).getBoolean();
 
         config.save();
         logger.info("Finished loading config. ");

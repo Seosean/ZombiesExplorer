@@ -1,7 +1,10 @@
 package com.seosean.zombiesexplorer;
 
 import com.seosean.showspawntime.ShowSpawnTime;
+import com.seosean.showspawntime.utils.DebugUtils;
 import com.seosean.showspawntime.utils.LanguageUtils;
+import com.seosean.zombiesexplorer.utils.DelayedTask;
+import com.seosean.zombiesexplorer.utils.Order;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -14,6 +17,8 @@ import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGiantZombie;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityGuardian;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntitySilverfish;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySlime;
@@ -24,6 +29,7 @@ import net.minecraft.entity.passive.EntityMooshroom;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntitySquid;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -32,6 +38,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpawnPatternNotice {
     public boolean startCollecting = true;
@@ -123,7 +130,7 @@ public class SpawnPatternNotice {
         if (event.phase!= TickEvent.Phase.START) return;
         EntityPlayerSP p = mc.thePlayer;
         if (p == null) return;
-        
+
         List<EntityLivingBase> list = new ArrayList<>();
 
         list.addAll(this.allEntities);
@@ -145,5 +152,69 @@ public class SpawnPatternNotice {
         if (!event.entity.equals(p)) return;
 
         PowerUpDetect.amountOfIncomingPowerups = 0;
+    }
+
+    public List<String> list = new ArrayList<>();
+    public DelayedTask delayedTask;
+    @SubscribeEvent
+    public void onDetectSpawnOrder(EntityJoinWorldEvent event) {
+        if (!ZombiesExplorer.MobSpawnOrder) {
+            return;
+        }
+
+        Minecraft mc = Minecraft.getMinecraft();
+        if (mc == null || mc.theWorld == null ) return;
+        EntityPlayerSP p = mc.thePlayer;
+        if(p == null) return;
+
+        if (!LanguageUtils.getMap().equals(LanguageUtils.ZombiesMap.ALIEN_ARCADIUM)) {
+            return;
+        }
+
+        if (!(event.entity instanceof EntityLivingBase)) {
+            return;
+        }
+
+        EntityLivingBase entityLivingBase = (EntityLivingBase) event.entity;
+        if (entityLivingBase instanceof EntityIronGolem ||
+                entityLivingBase instanceof EntityGhast ||
+                entityLivingBase instanceof EntityBlaze ||
+                entityLivingBase instanceof EntitySlime ||
+                entityLivingBase instanceof EntityMagmaCube ||
+                entityLivingBase instanceof EntityGiantZombie) {
+            String name = entityLivingBase.getName();
+
+            if (entityLivingBase instanceof EntityIronGolem) {
+                name = EnumChatFormatting.WHITE + name;
+            } else if (entityLivingBase instanceof EntityGhast) {
+                name = EnumChatFormatting.LIGHT_PURPLE + name;
+            } else if (entityLivingBase instanceof EntityBlaze) {
+                name = EnumChatFormatting.GOLD + name;
+            } else if (entityLivingBase instanceof EntityMagmaCube) {
+                name = EnumChatFormatting.RED + name;
+            } else if (entityLivingBase instanceof EntitySlime) {
+                name = EnumChatFormatting.GREEN + name;
+            } else if (entityLivingBase instanceof EntityGiantZombie) {
+                name = EnumChatFormatting.AQUA + name;
+            }
+
+
+            list.add(name);
+
+            if (delayedTask != null) {
+                delayedTask.cancel();
+            }
+
+            delayedTask = new DelayedTask() {
+                @Override
+                public void run() {
+                    List<String> newOrderList = list.stream().distinct().collect(Collectors.toList());
+                    Order.input(newOrderList);
+
+                    list = new ArrayList<>();
+                    delayedTask = null;
+                }
+            }.runTaskLater(19);
+        }
     }
 }

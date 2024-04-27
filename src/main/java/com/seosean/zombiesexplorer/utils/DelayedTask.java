@@ -10,7 +10,6 @@ public abstract class DelayedTask implements Runnable {
     private int delay;
     private int ticks;
     private boolean isCancelled = false;
-    private Runnable run;
 
     public DelayedTask(){
         MinecraftForge.EVENT_BUS.register(this);
@@ -40,17 +39,20 @@ public abstract class DelayedTask implements Runnable {
     }
 
     public DelayedTask runTaskLater(int delay) {
+        this.isCancelled = false;
         this.delay = delay;
         return this;
     }
 
     public DelayedTask runTaskTimer(int delay, int ticks) {
+        this.isCancelled = false;
         this.delay = delay;
         this.ticks = ticks;
         return this;
     }
 
     public void cancel() {
+        this.isCancelled = true;
         this.ticks = 0;
     }
 }
